@@ -21,8 +21,19 @@ func TcpConnect(L *lua.LState) int {
 	return 1
 }
 
-var coreApi = map[string]lua.LGFunction {
+func TcpClose(L *lua.LState) int {
+	if err := Fcd.TcpClose(L); err != nil {
+		L.Push(lua.LString(err.Error()))
+		return 1
+	}
+
+	L.Push(lua.LNil)
+	return 1
+}
+
+var coreApi = map[string]lua.LGFunction{
 	"tcpConnect": TcpConnect,
+	"tcpClose":   TcpClose,
 }
 
 func Loader(L *lua.LState) int {

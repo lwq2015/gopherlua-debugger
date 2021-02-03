@@ -86,3 +86,11 @@ func (t *Transport) Send(cmd int, msg interface{}) {
 		log.Println("send msg fail:", string(data), err)
 	}
 }
+
+func (t *Transport) Close() error {
+	if t.c == nil {
+		return fmt.Errorf("Connect is nil")
+	}
+
+	return t.c.Close()
+}

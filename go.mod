@@ -1,10 +1,10 @@
-module github.com/edolphin-ydf/gopherlua-debugger
+module github.com/lwq2015/gopherlua-debugger
 
-go 1.13
+go 1.14
 
 require (
-	github.com/yuin/gopher-lua v0.0.0-20190206043414-8bfc7677f583
-	golang.org/x/net v0.0.0-20191101175033-0deb6923b6d9 // indirect
+	github.com/edolphin-ydf/gopherlua-debugger v0.0.2
+	github.com/yuin/gopher-lua v0.0.0-20200816102855-ee81675732da
 )
 
-replace github.com/yuin/gopher-lua => github.com/edolphin-ydf/gopher-lua v0.0.0-20191105142246-92ca436742b9
+replace github.com/yuin/gopher-lua => github.com/lwq2015/gopher-lua v0.0.0-20210203124845-b9a85c58cfd8
