@@ -44,7 +44,7 @@ func (f *Facade) TcpConnect(L *lua.LState, host string, port int) error {
 	f.t = &Transport{}
 	f.t.Handler = f.HandleMsg
 	if err := f.t.Connect(host, port); err != nil {
-		LuaError(L, err.Error())
+		//	LuaError(L, err.Error()) // 不要异常
 		return err
 	}
 
