@@ -45,6 +45,7 @@ func (f *Facade) TcpConnect(L *lua.LState, host string, port int) error {
 	f.t.Handler = f.HandleMsg
 	if err := f.t.Connect(host, port); err != nil {
 		//	LuaError(L, err.Error()) // 不要异常，没有启动调试器服务器(vscode)时，连接不上很正常
+		delete(f.states, L) // 连接失败了，需要删除
 		return err
 	}
 
@@ -58,11 +59,11 @@ func (f *Facade) TcpClose(L *lua.LState) error {
 	}
 
 	if err := f.t.Close(); err != nil {
+		delete(f.states, L) // 关闭失败，也删除
 		return err
 	}
 
 	delete(f.states, L)
-
 	return nil
 }
 
