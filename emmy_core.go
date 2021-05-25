@@ -1,18 +1,29 @@
 package lua_debugger
 
 import (
-	lua "github.com/yuin/gopher-lua"
 	"log"
+
+	lua "github.com/yuin/gopher-lua"
 )
 
 func init() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 }
 
+const (
+	KeyDebuggerFcd = "__Debugger_Fcd"
+)
+
 func TcpConnect(L *lua.LState) int {
 	host := L.CheckString(1)
 	port := L.CheckNumber(2)
-	if err := Fcd.TcpConnect(L, host, int(port)); err != nil {
+
+	fcd := newFacade()
+	fcdUd := L.NewUserData()
+	fcdUd.Value = fcd
+	L.SetField(L.Get(lua.RegistryIndex), KeyDebuggerFcd, fcdUd)
+
+	if err := fcd.TcpConnect(L, host, int(port)); err != nil {
 		L.Push(lua.LFalse)
 		L.Push(lua.LString(err.Error()))
 		return 2
@@ -22,9 +33,13 @@ func TcpConnect(L *lua.LState) int {
 }
 
 func TcpClose(L *lua.LState) int {
-	if err := Fcd.TcpClose(L); err != nil {
-		L.Push(lua.LString(err.Error()))
-		return 1
+	if fcdUd, ok := L.GetField(L.Get(lua.RegistryIndex), KeyDebuggerFcd).(*lua.LUserData); ok {
+		if fcd, ok := fcdUd.Value.(*Facade); ok {
+			if err := fcd.TcpClose(L); err != nil {
+				L.Push(lua.LString(err.Error()))
+				return 1
+			}
+		}
 	}
 
 	L.Push(lua.LNil)
